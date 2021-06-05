@@ -1,0 +1,11 @@
+version: "3.9"
+
+services:
+  bot:
+    build: ./DiscordNetBotTemplate/
+    container_name: discordnetbottemplate
+    restart: unless-stopped
+    environment:
+    - DISCORD_BOT_TOKEN=${DISCORD_BOT_TOKEN:-yourtokenhere}
+    - DISCORD_BOT_ACTIVITY=${DISCORD_BOT_ACTIVITY:-I'm alive!}
+    - DISCORD_BOT_COMMAND_PREFIX=${DISCORD_BOT_COMMAND_PREFIX:-!}
