@@ -41,10 +41,13 @@ namespace DiscordNet.Services
 
             // This value holds the offset where the prefix ends
             var argPos = 0;
-            // Perform prefix check. You may want to replace this with
-            // (!message.HasCharPrefix('!', ref argPos))
-            // for a more traditional command format like !help.
-            if (!message.HasMentionPrefix(_discord.CurrentUser, ref argPos)) return;
+            
+            // Perform prefix check.
+            // This will pick the prefix from the environment variable or fallback to '!' if none is provided
+            // By default, the bot will accept being mentioned to activate a command
+            if (!message.HasStringPrefix(Environment.GetEnvironmentVariable("DISCORD_BOT_COMMAND_PREFIX") ?? "!", ref argPos) 
+                || !message.HasMentionPrefix(_discord.CurrentUser, ref argPos))
+                return;
 
             // Create the websocket context
             var context = new SocketCommandContext(_discord, message);
