@@ -22,8 +22,8 @@ namespace DiscordNet.Services
 
             // Hook CommandExecuted to handle post-command-execution logic.
             _commands.CommandExecuted += CommandExecutedAsync;
-            // Hook MessageReceived so we can process each message to see
-            // if it qualifies as a command.
+            
+            // Hook MessageReceived so we can process each message to see if it qualifies as a command.
             _discord.MessageReceived += MessageReceivedAsync;
         }
 
@@ -33,11 +33,11 @@ namespace DiscordNet.Services
             await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
         }
 
-        public async Task MessageReceivedAsync(SocketMessage rawMessage)
+        private async Task MessageReceivedAsync(SocketMessage rawMessage)
         {
             // Ignore system messages, or messages from other bots
-            if (rawMessage is not SocketUserMessage message) return;
-            if (message.Source != MessageSource.User) return;
+            if (rawMessage is not SocketUserMessage {Source: MessageSource.User} message) 
+                return;
 
             // This value holds the offset where the prefix ends
             var argPos = 0;
@@ -46,16 +46,17 @@ namespace DiscordNet.Services
             // for a more traditional command format like !help.
             if (!message.HasMentionPrefix(_discord.CurrentUser, ref argPos)) return;
 
+            // Create the websocket context
             var context = new SocketCommandContext(_discord, message);
-            // Perform the execution of the command. In this method,
-            // the command service will perform precondition and parsing check
-            // then execute the command if one is matched.
+            
+            // Perform the execution of the command. In this method, the command service will perform precondition
+            // and parsing check, then execute the command if one is matched.
+            // Note that normally a result will be returned by this format,
+            // but here we will handle the result in CommandExecutedAsync.
             await _commands.ExecuteAsync(context, argPos, _services);
-            // Note that normally a result will be returned by this format, but here
-            // we will handle the result in CommandExecutedAsync,
         }
 
-        public static async Task CommandExecutedAsync(Optional<CommandInfo> command, ICommandContext context, IResult result)
+        private static async Task CommandExecutedAsync(Optional<CommandInfo> command, ICommandContext context, IResult result)
         {
             // command is unspecified when there was a search failure (command not found); we don't care about these errors
             if (!command.IsSpecified)
