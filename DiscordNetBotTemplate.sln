@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30804.86
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiscordNet", "DiscordNet\DiscordNet.csproj", "{420369C3-FF87-41F6-A68C-E9043061BE15}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiscordNetBotTemplate", "DiscordNetBotTemplate\DiscordNetBotTemplate.csproj", "{420369C3-FF87-41F6-A68C-E9043061BE15}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

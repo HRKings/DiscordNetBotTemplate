@@ -1,9 +1,9 @@
-﻿using Discord;
-using Discord.Commands;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
+using Discord;
+using Discord.Commands;
 
-namespace DiscordNet.Modules
+namespace DiscordNetBotTemplate.Modules
 {
     public class HelpHandler : ModuleBase<SocketCommandContext>
     {

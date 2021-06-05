@@ -1,4 +1,4 @@
-﻿namespace DiscordNet
+﻿namespace DiscordNetBotTemplate
 {
     public static class Program
     {

@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Discord.Commands;
 
-namespace DiscordNet.Modules
+namespace DiscordNetBotTemplate.Modules
 {
     public class BaseModule : ModuleBase<SocketCommandContext>
     {
