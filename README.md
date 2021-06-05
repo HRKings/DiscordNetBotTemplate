@@ -1,6 +1,6 @@
 # Discord.NET Bot Template
 
-This repository contains a complete Discord Bot written in C# using the Discord.NET framework. Feel free to clone it or create your own repository from the template. Expand it as much as you want.
+This repository contains a complete Discord Bot written in C# using the Discord.NET framework. Feel free to clone it or create your own repository from the template. Expand it as much as you want. The project uses dependency injection and comes ready with ping and help commands. Enjoy!
 
 ## Running with Docker
 
