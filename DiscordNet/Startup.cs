@@ -4,40 +4,65 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
-using DiscordNet.Commands;
 using DiscordNet.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DiscordNet
 {
-    public class Initialize
+    public class Startup
     {
-        private readonly DiscordSocketClient _client;
-        private readonly CommandService _commands;
-
-        public Initialize(CommandService commands = null, DiscordSocketClient client = null)
+        private DiscordSocketClient _client;
+        
+        public async Task Initialize()
         {
-            _commands = commands ?? new CommandService();
-            _client = client ?? new DiscordSocketClient();
-        }
+            // You should dispose a service provider created using ASP.NET
+            // when you are finished using it, at the end of your app's lifetime.
+            // If you use another dependency injection framework, you should inspect
+            // its documentation for the best way to do this.
+            await using var services = ConfigureServices();
+            _client = services.GetRequiredService<DiscordSocketClient>();
 
-        public async Task Start(Func<LogMessage, Task> baseLog)
-        {
-            await _client.LoginAsync(TokenType.Bot, 
-                Environment.GetEnvironmentVariable("TOKEN"));
+            _client.Log += LogAsync;
+            services.GetRequiredService<CommandService>().Log += LogAsync;
+
+            // Tokens should be considered secret data and never hard-coded.
+            // We can read from the environment variable to avoid hardcoding.
+            await _client.LoginAsync(TokenType.Bot, Environment.GetEnvironmentVariable("DISCORD_BOT_TOKEN"));
             await _client.StartAsync();
-            
-            _client.Ready += OnReady;
-            _client.Log += baseLog;
+
+            // Here we initialize the logic required to register our commands.
+            await services.GetRequiredService<CommandHandlingService>().InitializeAsync();
+
+            await Task.Delay(Timeout.Infinite);
+        }
+        
+        private Task OnReady()
+        {
+            // Logs the bot name and all the servers that it's connected to
+            Console.WriteLine($"Connected to these servers as '{_client.CurrentUser.Username}': ");
+            foreach (var guild in _client.Guilds) 
+                Console.WriteLine($"- {guild.Name}");
+
+            // Set the activity from the environment variable or fallback to 'I'm alive!'
+            _client.SetGameAsync(Environment.GetEnvironmentVariable("DISCORD_BOT_ACTIVITY") ?? "I'm alive!", 
+                type: ActivityType.CustomStatus);
+            Console.WriteLine($"Activity set to '{_client.Activity.Name}'");
+
+            return Task.CompletedTask;
         }
 
-       
+        private Task LogAsync(LogMessage log)
+        {
+            Console.WriteLine(log.ToString());
 
-        public IServiceProvider BuildServiceProvider()
+            return Task.CompletedTask;
+        }
+
+        private static ServiceProvider ConfigureServices()
         {
             return new ServiceCollection()
-                .AddSingleton(_client)
-                .AddSingleton(_commands)
+                .AddSingleton<DiscordSocketClient>()
+                .AddSingleton<CommandService>()
                 .AddSingleton<CommandHandlingService>()
                 .BuildServiceProvider();
         }
