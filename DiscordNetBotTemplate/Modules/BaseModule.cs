@@ -1,18 +1,17 @@
 ﻿using System.Threading.Tasks;
 using Discord.Commands;
 
-namespace DiscordNetBotTemplate.Modules
-{
-    public class BaseModule : ModuleBase<SocketCommandContext>
-    {
-        [Command("ping")]
-        [Summary("Pong!")]
-        public Task PongAsync()
-            => ReplyAsync("Pong from C#.");
+namespace DiscordNetBotTemplate.Modules;
 
-        [Command("hello")]
-        [Summary("Hello World!")]
-        public Task HelloWorldAsync()
-            => ReplyAsync("Hello World! from C#.");
-    }
+public class BaseModule : ModuleBase<SocketCommandContext>
+{
+    [Command("ping")]
+    [Summary("Pong!")]
+    public Task PongAsync()
+        => ReplyAsync("Pong from C#.");
+
+    [Command("hello")]
+    [Summary("Hello World!")]
+    public Task HelloWorldAsync()
+        => ReplyAsync("Hello World! from C#.");
 }
